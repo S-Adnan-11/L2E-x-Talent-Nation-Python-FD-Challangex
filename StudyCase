@@ -1,0 +1,123 @@
+# StudyCase — how the soluxionz got here 😼
+
+These are walkthroughs of the choices in the code, written in my kinda language. When I mention another route, it's an option to think through, not a claim that I ran it and watched it fail. The whole point was to work within the constraints and understand what the shortcuts normally do for us.
+
+## week 3
+
+### 1. simple calcx — undo needs receipts 😹
+
+The starter already had addition, subtraction and a division-by-zero check. I kept `simple_calcx`, finished multiplication/division and gave unknown operators an error message. They said no eval() lol, so feeding a typed expression straight into Python was off the table. A few explicit operator checks do the job and make it obvious what the calculator accepts.
+
+The bigger thing was undo. Ermm, just remembering the last operator wouldn't be enough: multiplying by zero wipes out information, so dividing afterwards can't bring it back. Instead, before each successful calculation, I save the old total in `historyx`. Undo pops that value. Multiple undos work cos the list holds multiple old totals. Invalid numbers, unknown operators and division by zero don't enter the history at all. `float()` handles decimal inputs; NaN/infinity are rejected so the total stays usable.
+
+### 2. palindromex — let the pointers do the walking
+
+Reversing the sentence would've been the obvious shortcut, but they banned reversed strings AND cleaned substrings 😭. So I start one pointer at the beginning and one at the end. If the left character is punctuation, move left inward. If the right one is punctuation, move right inward. Only compare when both are letters/digits, and lowercase those individual characters for the comparison.
+
+For “Was it a car or a cat I saw?”, the punctuation gets skipped where it lives. Nothing needs copying into a cleaned sentence. A mismatch ends things immediately; matching characters move both pointers inward. If they meet/cross, every relevant pair matched. Empty text works too cos there are no mismatching pairs to find.
+
+### 3. gradez — no sum(), max() or min()? okay then 😹
+
+They took away sum() for the average and max()/min() for the ranking. Ermm, an average is still just a running total divided by the number of scores, so I add each score myself. The grade checks go from A downward. That matters with decimal averages: 69.9 is below 70 but above 60, so it's B without rounding it into another grade.
+
+As each student's result arrives, I compare it with the current highest/lowest rows. The first scored student fills both slots; later students replace a slot only if they're strictly better/worse. That also leaves ties with the first student. Starting with zero would've been awkward for the lowest tracker, so `None` means “haven't seen a scored student yet.” No scores gets N/A rather than pretending they earned zero.
+
+### 4. second_largestx — two slots, one lap
+
+Sort the numbers and take the second one? Nice thought, banned route 😹. Also, the second item after sorting might just be another copy of the largest. The constraint wants the second-largest UNIQUE number in one pass, so I keep a largest slot and a runner-up slot.
+
+When a new largest turns up, the old largest becomes runner-up. Otherwise, the number can improve runner-up only if it differs from the largest. For `[4, 9, 2, 9, 7]`, the second 9 changes nothing and 7 takes the runner-up spot. I use `None` for empty slots; using zero would break negative-only lists. If runner-up stays `None`, there weren't two distinct numbers.
+
+### 5. word_freqx — punctuation can't glue words together
+
+No regex, no Counter, no string.punctuation, and no max() for the winner. Aight 😼. I wrote the punctuation characters explicitly and replace each one with a space while lowercasing the text. Deleting every punctuation mark outright would turn `python,python` into `pythonpython`, so making a gap is the useful choice here. That policy also splits contractions/hyphenated words at punctuation.
+
+Then each word gets a dictionary entry: existing count plus one, or zero plus one if it's new. To find the winner, I walk through that dictionary with a highest-count variable. Strictly greater replaces the winner; equal counts leave it alone. In the supplied example, python and is both appear twice, but python arrived first, so python wins as expected.
+
+### 6. two_sumx — ask for what's missing
+
+Checking every number against every other number would find a pair, but the nested loops were banned and the target was O(n). Instead of asking “what pairs with everything?”, I ask “what exact value would complete this number?” For target 9 and current number 7, that's 2.
+
+`seenx` maps earlier numbers to their indices. If the missing value is there, return its index and the current index. Otherwise save the current number. Checking BEFORE saving is the lil trick that stops one position pairing with itself; `[3]` can't make 6, but `[3, 3]` can. Keeping the earliest index for duplicate numbers makes the first-pair choice consistent. Dictionary lookups are average O(1), so the scan is average O(n).
+
+### 7. anagramz — letters need their attendance count
+
+Sorting both words would make comparison easy, but sorted() and Counter weren't allowed. Just checking whether both words contain the same letters wouldn't be enough either: `aab` and `abb` share their letter types but have different counts.
+
+So each word gets its own lowercase character-frequency dictionary. `listen` and `silent` produce identical maps, while `apple` and `pale` don't cos apple has two p's. Comparing the dictionaries checks both the characters and their counts. I don't strip spaces or punctuation here; this task says words and only asks us to ignore casing.
+
+### 8. cipherx — the alphabet is a circle now 😼
+
+The challenge was wrap-around while leaving spaces, digits and punctuation alone. A plain character-code addition would move z past the alphabet, so I first turn the letter into a position from 0 to 25. Add the shift, take `% 26`, then move that position back into its character-code range.
+
+Uppercase uses A as its starting point and lowercase uses a. Everything outside those English-letter ranges passes through unchanged. For decryption, I negate the shift and use the very same calculation. That means backwards wrap-around and huge shifts don't need separate rules; modulo handles both. The script asks for the mode before applying it.
+
+### 9. number_reversez — strings weren't invited 😭
+
+They said no converting the integer to a string. So the digits have to come out through maths: `% 10` gives the last digit, and `// 10` removes it. Each extracted digit goes onto the result with `result * 10 + digit`.
+
+With 123, that builds 3, then 32, then 321. I handle the sign first and work on a positive magnitude, cos Python's floor division on negatives would make the peeling logic awkward. Afterwards I restore the sign. For 1200 the starting zeros contribute nothing, so the result is 21 naturally. Zero never enters the loop and stays zero.
+
+## week 4
+
+### 1. palindromex again — same walk, cleaner jobs
+
+The two-pointer restrictions still apply, but now the functions have to return values and keep print() outside. `is_letter` identifies letters; `is_palindrome` handles moving the pointers and checking them. The pointer checks let digits count too cos the sentence rule only tells us to ignore spaces/punctuation.
+
+The recursive bonus replaces each pointer movement with another call. Left points at punctuation? Call again with left increased. Right points at punctuation? Call again with right decreased. A mismatch returns False; meeting/crossing returns True. It does the same work without a while loop or sliced strings. I called that variant `is_palindrome_recursive` so both versions stay available to compare.
+
+### 2. gradez again — map makes rows, filter keeps passes
+
+This time map/filter couldn't just be there for decoration. I gave `student_rowx` one student and had it return `(name, average, grade)`. Then `map` genuinely transforms all the student dictionaries into those result tuples. `grade_for` just returns the letter; it doesn't print anything.
+
+`filter` takes those rows and keeps grades A–C. The highest/lowest tracking still uses manual comparisons, and the average still adds scores without sum(). All result containers are made inside the call, so the supplied students stay unchanged. For the bonus I also wrote `[student_rowx(studentx) for studentx in studentsx]`. I find that clearer cos it reads as “make a row for each student”; both versions produce the same list.
+
+### 3. word_freqx again — let the dictionary stay local
+
+The punctuation policy stays the same, but the responsibilities split up. `clean_wordsx` prepares the lowercase words. `count_words` creates a NEW dictionary for this call. `most_frequent` reads the dictionary and returns the winning word without changing it. Output happens after those functions finish.
+
+For the reduce bonus, the accumulator is the winning word so far. Each next word either beats it or leaves it alone. I start with `None` and return an empty string if there are no words. The optional implementation lives in `reduce_bonusx.py` with its permitted functools import, so the main no-import solution stays self-contained. The ordinary loop is still the easier version to explain, tbh 😹.
+
+### 4. two_sumx again — local memory is still pure
+
+Having a seen dictionary doesn't make the function impure. It's created inside `two_sum`, used only for this call, and never edits `nums`. Same input gives the same index pair, and there are no prints or prompts inside. No pair means `[]`, exactly as the question asks.
+
+The reduce bonus carries `(seen dictionary, answer)` through the scan. It fills the first answer and leaves it alone afterwards. Reduce still visits the remaining inputs, but it doesn't keep searching once the answer exists. I update that fresh internal dictionary instead of copying the entire map at each step; repeated whole-map copying would lose the O(n) target. The caller's list is untouched either way.
+
+### 5. second_largestx again — put the update rule in step
+
+This question wants the decision itself as a pure function: `step(largest, second_largest, x)`. So I pass the current two slots and one number into `step`, and it returns the updated pair. The main loop assigns that pair back to its LOCAL trackers.
+
+That's the same largest/runner-up reasoning from Week 3, just pulled into a function we can inspect on its own. The reduce bonus carries the two-slot tuple as its accumulator and performs those decisions in one reduce call. Both ignore duplicate maxima and return `None` when runner-up never gets filled. No sorting or set conversion needed, lol 😼.
+
+### 6. cipherx again — make a function that remembers
+
+`make_shifter(3)` doesn't shift a whole message immediately. It makes and returns a small character function that remembers the 3. That memory is the closure. `map` then calls that returned function for each character, and `join` puts the results together.
+
+Decrypting asks the same factory for a negative shift. Uppercase/lowercase work by choosing the appropriate base code; I never wrote out either alphabet, which covers the bonus too. Punctuation still returns unchanged. The shift comes from the enclosing call rather than a global, so two shifters made with different shifts can coexist without interfering with each other.
+
+### 7. compose_pipex — the order is the whole point
+
+This one had a trap hiding in plain sight: compose and pipe do DIFFERENT ordering. `compose(f, g)` returns a function that does g first, then f. `pipe(f, g, h)` goes left-to-right: f, then g, then h. That's why add-one/double gives 11 with compose and 12 with pipe for input 5.
+
+Each text helper returns a new string. The reverse helper walks indices backwards and gathers characters, cos `[::-1]` and `.reverse()` were banned here too. The recursive bonus handles one last-position character per call until the index drops below zero. An empty pipe returns its input unchanged, which follows naturally from having no functions to apply. The full text pipeline turns “  Hello World  ” into `dlrw llh`.
+
+### 8. flatten_groupx — even the siblings use recursion 😹
+
+“Recursive flatten” sounds simple until they also say no for/while inside it. Recursing into nested lists but looping over siblings would still break that rule. So `walkx` takes an index: deal with that item, then recursively call `walkx` for the next index. If the item is another list, `flatten` handles that list and we extend the fresh result. Otherwise append the item as it is.
+
+`group_by` gets its key rule as an argument, so it can group words by first letter OR numbers by odd/even without changing the function. It builds a fresh dictionary with fresh bucket lists. `combined` connects flattening to first-letter grouping. The bonus makes grouping recursive as well. Empty lists disappear; non-list elements stay. These are finite-list solutions, with Python's normal recursion-depth limit still applying.
+
+### 9. fib_memoz — stop solving the same thing again
+
+Naive recursive Fibonacci keeps recalculating fib(3), fib(4), and loads of other values along different branches. The recursive formula is fine; repeating all that work is what hurts. `memoize` wraps a function with a dictionary cache. The positional arguments form the lookup key, so they need to be hashable.
+
+If the arguments already have an answer, return it. Otherwise call the original function, cache its result, and return that. The cache lives inside the decorator's closure, and each decorated function gets its own. Recursive calls go through the decorated name, so fib(35) only needs the small collection of distinct subproblems. Decorating `count_ways` proves it isn't Fibonacci-specific: one/two-step stair choices reuse the same caching idea. Zero stairs has one way—take no steps.
+
+### 10. transactionz — all the lil functions link up
+
+This one pulls the whole week together. `get_income` and `get_expenses` use the reusable filter helper to keep the relevant rows. `calculate_total` maps each row to its amount, then adds those amounts manually. They said no sum() and no max() lol, so `find_largest` compares each expense with the current winner instead.
+
+`get_balance` subtracts expenses from income. `get_status` handles positive, negative AND exactly zero. `analyze` joins those results into the hard-bonus dictionary, including the largest expense's name and the expense count. Printing stays outside the analysis. Empty transactions give zeros and Break-even; income with no expenses gives largest expense None. Everything works on fresh containers without editing the supplied rows, and the largest-expense helper returns a copy so editing that result doesn't change the source record.
+
+The thing I keep coming back to: the constraints make the hidden work visible. Once the pointer moves, tracker updates and local state make sense, the fancy built-ins stop looking like magic 😼.

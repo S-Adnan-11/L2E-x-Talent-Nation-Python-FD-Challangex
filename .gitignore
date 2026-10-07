@@ -1,0 +1,5 @@
+__pycache__/
+*.py[cod]
+
+# Personal revision notes stay on this machine.
+.private_soluxionz/
