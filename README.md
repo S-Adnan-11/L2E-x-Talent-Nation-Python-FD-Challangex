@@ -69,5 +69,5 @@ python3 -m unittest discover -s tests -v
 - Recursive solutions stop at their base cases, but very long/deep inputs can reach Python's recursion limit. Memoization speeds up repeated Fibonacci work; it doesn't remove that limit. `memoize` accepts positional, hashable arguments to functions with stable results.
 - Transactions use the question's schema: `name`, numeric `amount`, and `type` (`income` or `expense`). An empty expense list has largest expense `None`; exactly zero balance is `Break-even`.
 
-[StudyCase](StudyCase) tells the constraint stories. The personal walkthrough lives locally in `.private_soluxionz/soluxionz_explained.md`; `.gitignore` excludes that folder from normal commits. It's a local note, not encrypted storage.
+[StudyCase](StudyCase) tells the constraint stories.
 
