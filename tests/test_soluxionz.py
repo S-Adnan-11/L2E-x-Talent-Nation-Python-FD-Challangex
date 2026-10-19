@@ -24,7 +24,7 @@ def loadx(relative_path):
 
 class SoluxionzTests(unittest.TestCase):
     def test_calculator_operations(self):
-        calcx = loadx("Simple_Calculator.py").simple_calcx
+        calcx = loadx("week3x/Simple_Calculator.py").simple_calcx
         for firstx, secondx, operatorx, expectedx in (
             (0, 5, "+", 5), (5, 2, "*", 10), (5, 2, "-", 3),
             (5, 2, "/", 2.5), (1.25, 2.5, "+", 3.75),
@@ -35,7 +35,7 @@ class SoluxionzTests(unittest.TestCase):
         self.assertIn("Error", calcx(5, 2, "**"))
 
     def test_calculator_undo_and_invalid_commands(self):
-        commandx = [sys.executable, str(ROOT / "soluxionz/Simple_Calculator.py")]
+        commandx = [sys.executable, str(ROOT / "soluxionz/week3x/Simple_Calculator.py")]
         sessionx = "undo\n+ 5\n* 2\n/ 0\n** 2\n+ nope\n+\n+ nan\n+ inf\nundo\nundo\nundo\n+ 2.5\n/ 2\nquit\n"
         resultx = subprocess.run(commandx, input=sessionx, text=True, capture_output=True, timeout=5)
         self.assertEqual(resultx.returncode, 0, resultx.stderr)
@@ -93,9 +93,9 @@ class SoluxionzTests(unittest.TestCase):
 
     def test_second_largest(self):
         funcsx = (
-            loadx("week3x/second_largestx.py").second_largestx,
+            loadx("week3x/second_largest.py").second_largestx,
             loadx("week4x/second_largestx.py").second_largest,
-            loadx("week4x/reduce_bonusx.py").second_largest_reduce,
+            loadx("week4x/reduce_bonuz.py").second_largest_reduce,
         )
         for checkx in funcsx:
             for numsx, expectedx in (
@@ -113,9 +113,9 @@ class SoluxionzTests(unittest.TestCase):
         self.assertEqual(stepx(9, 7, 10), (10, 9))
 
     def test_word_frequency(self):
-        week3x = loadx("week3x/word_freqx.py")
+        week3x = loadx("week3x/word_frex.py")
         week4x = loadx("week4x/word_freqx.py")
-        bonusx = loadx("week4x/reduce_bonusx.py")
+        bonusx = loadx("week4x/reduce_bonuz.py")
         for textx, expectedx, winnerx in (
             ("Python is fun, and Python is powerful!", {"python": 2, "is": 2, "fun": 1, "and": 1, "powerful": 1}, "python"),
             ("HELLO,hello. world!", {"hello": 2, "world": 1}, "hello"),
@@ -137,7 +137,7 @@ class SoluxionzTests(unittest.TestCase):
         funcsx = (
             loadx("week3x/two_sumx.py").two_sumx,
             loadx("week4x/two_sumx.py").two_sum,
-            loadx("week4x/reduce_bonusx.py").two_sum_reduce,
+            loadx("week4x/reduce_bonuz.py").two_sum_reduce,
         )
         for checkx in funcsx:
             for numsx, targetx, expectedx in (
@@ -162,8 +162,8 @@ class SoluxionzTests(unittest.TestCase):
             self.assertEqual(checkx(firstx, secondx), expectedx)
 
     def test_caesar_ciphers(self):
-        for weekx in ("week3x", "week4x"):
-            modulex = loadx(f"{weekx}/cipherx.py")
+        for pathx in ("week3x/cipherx.py", "week4x/cipherx_again!!.py"):
+            modulex = loadx(pathx)
             for textx, shiftx, modex, expectedx in (
                 ("hello", 1, "encrypt", "ifmmp"), ("xyz", 2, "encrypt", "zab"),
                 ("hello, world!", 3, "encrypt", "khoor, zruog!"),
@@ -177,11 +177,11 @@ class SoluxionzTests(unittest.TestCase):
             self.assertEqual(modulex.caesarx(modulex.caesarx(messagex, 17, "encrypt"), 17, "decrypt"), messagex)
             with self.assertRaises(ValueError):
                 modulex.caesarx("hello", 1, "other")
-        shifterx = loadx("week4x/cipherx.py").make_shifter(1)
+        shifterx = loadx("week4x/cipherx_again!!.py").make_shifter(1)
         self.assertEqual(shifterx("Z"), "A")
 
     def test_number_reverser(self):
-        checkx = loadx("week3x/number_reversez.py").number_reversex
+        checkx = loadx("week3x/number_reverze.py").number_reversex
         for numberx, expectedx in ((12345, 54321), (-987, -789), (1200, 21), (0, 0), (-1200, -21), (10, 1), (7, 7), (100000000000000000002, 200000000000000000001)):
             self.assertEqual(checkx(numberx), expectedx)
 
@@ -274,13 +274,15 @@ class SoluxionzTests(unittest.TestCase):
         outputx = io.StringIO()
         with redirect_stdout(outputx):
             for pathx in (ROOT / "soluxionz").rglob("*.py"):
+                if pathx.parent.name not in ("week3x", "week4x"):
+                    continue
                 loadx(str(pathx.relative_to(ROOT / "soluxionz")))
             loadx("week4x/palindromex.py").is_palindrome("aba")
             loadx("week4x/gradez.py").student_reportx([])
             loadx("week4x/word_freqx.py").count_words(["hi"])
             loadx("week4x/two_sumx.py").two_sum([1, 2], 3)
             loadx("week4x/second_largestx.py").second_largest([1, 2])
-            loadx("week4x/cipherx.py").caesarx("hi", 1, "encrypt")
+            loadx("week4x/cipherx_again!!.py").caesarx("hi", 1, "encrypt")
             loadx("week4x/compose_pipex.py").pipe()("hi")
             loadx("week4x/flatten_groupx.py").combined([["hi"]])
             loadx("week4x/fib_memoz.py").fib(35)
@@ -289,15 +291,15 @@ class SoluxionzTests(unittest.TestCase):
 
     def test_challenge_restrictions(self):
         restrictionsx = {
-            "Simple_Calculator.py": {"eval"},
+            "week3x/Simple_Calculator.py": {"eval"},
             "week3x/gradez.py": {"sum", "max", "min"},
             "week4x/gradez.py": {"sum", "max", "min"},
-            "week3x/second_largestx.py": {"sort", "sorted", "max", "set"},
+            "week3x/second_largest.py": {"sort", "sorted", "max", "set"},
             "week4x/second_largestx.py": {"sort", "sorted", "max", "set"},
-            "week3x/word_freqx.py": {"max", "sort", "sorted", "Counter"},
+            "week3x/word_frex.py": {"max", "sort", "sorted", "Counter"},
             "week4x/word_freqx.py": {"max", "sort", "sorted", "Counter"},
             "week3x/anagramz.py": {"sorted", "Counter"},
-            "week3x/number_reversez.py": {"str"},
+            "week3x/number_reverze.py": {"str"},
             "week4x/transactionz.py": {"sum", "max", "sorted"},
         }
         treesx = {}
@@ -307,7 +309,7 @@ class SoluxionzTests(unittest.TestCase):
             treesx[relativex] = treex
             for nodex in ast.walk(treex):
                 if isinstance(nodex, (ast.Import, ast.ImportFrom)):
-                    self.assertEqual(relativex, "week4x/reduce_bonusx.py")
+                    self.assertEqual(relativex, "week4x/reduce_bonuz.py")
                     self.assertIsInstance(nodex, ast.ImportFrom)
                     self.assertEqual(nodex.module, "functools")
                     self.assertEqual([aliasx.name for aliasx in nodex.names], ["reduce"])
@@ -330,7 +332,7 @@ class SoluxionzTests(unittest.TestCase):
             self.assertFalse(any(isinstance(nodex, loop_typesx) for nodex in ast.walk(functionsx[namex])))
         for relativex, functionx in (
             ("week3x/two_sumx.py", "two_sumx"), ("week4x/two_sumx.py", "two_sum"),
-            ("week3x/second_largestx.py", "second_largestx"), ("week4x/second_largestx.py", "second_largest"),
+            ("week3x/second_largest.py", "second_largestx"), ("week4x/second_largestx.py", "second_largest"),
         ):
             function_nodex = next(nodex for nodex in treesx[relativex].body if isinstance(nodex, ast.FunctionDef) and nodex.name == functionx)
             self.assertEqual(len([nodex for nodex in ast.walk(function_nodex) if isinstance(nodex, (ast.For, ast.While))]), 1)

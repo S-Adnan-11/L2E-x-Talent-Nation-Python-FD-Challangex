@@ -1,13 +1,11 @@
-# StudyCase — how the soluxionz got here 😼
+# StudyCase
+# actually Case Study 😼
 
-These are walkthroughs of the choices in the code, written in my kinda language. When I mention another route, it's an option to think through, not a claim that I ran it and watched it fail. The whole point was to work within the constraints and understand what the shortcuts normally do for us.
+The constraints, the decisions and the bits that needed more than the obvious shortcut. Weeks 3–6 cover manual tracking, functional thinking, then harder versions of the practical problems. Same ideas coming back with extra work to do lol.
 
 ## week 3
 
 ### 1. simple calcx — undo needs receipts 😹
-
-The starter already had addition, subtraction and a division-by-zero check. I kept `simple_calcx`, finished multiplication/division and gave unknown operators an error message. They said no eval() lol, so feeding a typed expression straight into Python was off the table. A few explicit operator checks do the job and make it obvious what the calculator accepts.
-
 The bigger thing was undo. Ermm, just remembering the last operator wouldn't be enough: multiplying by zero wipes out information, so dividing afterwards can't bring it back. Instead, before each successful calculation, I save the old total in `historyx`. Undo pops that value. Multiple undos work cos the list holds multiple old totals. Invalid numbers, unknown operators and division by zero don't enter the history at all. `float()` handles decimal inputs; NaN/infinity are rejected so the total stays usable.
 
 ### 2. palindromex — let the pointers do the walking
@@ -22,13 +20,13 @@ They took away sum() for the average and max()/min() for the ranking. Ermm, an a
 
 As each student's result arrives, I compare it with the current highest/lowest rows. The first scored student fills both slots; later students replace a slot only if they're strictly better/worse. That also leaves ties with the first student. Starting with zero would've been awkward for the lowest tracker, so `None` means “haven't seen a scored student yet.” No scores gets N/A rather than pretending they earned zero.
 
-### 4. second_largestx — two slots, one lap
+### 4. second_largest — two slots, one lap
 
 Sort the numbers and take the second one? Nice thought, banned route 😹. Also, the second item after sorting might just be another copy of the largest. The constraint wants the second-largest UNIQUE number in one pass, so I keep a largest slot and a runner-up slot.
 
 When a new largest turns up, the old largest becomes runner-up. Otherwise, the number can improve runner-up only if it differs from the largest. For `[4, 9, 2, 9, 7]`, the second 9 changes nothing and 7 takes the runner-up spot. I use `None` for empty slots; using zero would break negative-only lists. If runner-up stays `None`, there weren't two distinct numbers.
 
-### 5. word_freqx — punctuation can't glue words together
+### 5. word_frex — punctuation can't glue words together
 
 No regex, no Counter, no string.punctuation, and no max() for the winner. Aight 😼. I wrote the punctuation characters explicitly and replace each one with a space while lowercasing the text. Deleting every punctuation mark outright would turn `python,python` into `pythonpython`, so making a gap is the useful choice here. That policy also splits contractions/hyphenated words at punctuation.
 
@@ -52,7 +50,7 @@ The challenge was wrap-around while leaving spaces, digits and punctuation alone
 
 Uppercase uses A as its starting point and lowercase uses a. Everything outside those English-letter ranges passes through unchanged. For decryption, I negate the shift and use the very same calculation. That means backwards wrap-around and huge shifts don't need separate rules; modulo handles both. The script asks for the mode before applying it.
 
-### 9. number_reversez — strings weren't invited 😭
+### 9. number_reverze — strings weren't invited 😭
 
 They said no converting the integer to a string. So the digits have to come out through maths: `% 10` gives the last digit, and `// 10` removes it. Each extracted digit goes onto the result with `result * 10 + digit`.
 
@@ -76,7 +74,7 @@ This time map/filter couldn't just be there for decoration. I gave `student_rowx
 
 The punctuation policy stays the same, but the responsibilities split up. `clean_wordsx` prepares the lowercase words. `count_words` creates a NEW dictionary for this call. `most_frequent` reads the dictionary and returns the winning word without changing it. Output happens after those functions finish.
 
-For the reduce bonus, the accumulator is the winning word so far. Each next word either beats it or leaves it alone. I start with `None` and return an empty string if there are no words. The optional implementation lives in `reduce_bonusx.py` with its permitted functools import, so the main no-import solution stays self-contained. The ordinary loop is still the easier version to explain, tbh 😹.
+For the reduce bonus, the accumulator is the winning word so far. Each next word either beats it or leaves it alone. I start with `None` and return an empty string if there are no words. The optional implementation lives in `reduce_bonuz.py` with its permitted functools import, so the main no-import solution stays self-contained. The ordinary loop is still the easier version to explain, tbh 😹.
 
 ### 4. two_sumx again — local memory is still pure
 
@@ -90,7 +88,7 @@ This question wants the decision itself as a pure function: `step(largest, secon
 
 That's the same largest/runner-up reasoning from Week 3, just pulled into a function we can inspect on its own. The reduce bonus carries the two-slot tuple as its accumulator and performs those decisions in one reduce call. Both ignore duplicate maxima and return `None` when runner-up never gets filled. No sorting or set conversion needed, lol 😼.
 
-### 6. cipherx again — make a function that remembers
+### 6. cipherx_again!! — make a function that remembers
 
 `make_shifter(3)` doesn't shift a whole message immediately. It makes and returns a small character function that remembers the 3. That memory is the closure. `map` then calls that returned function for each character, and `join` puts the results together.
 
@@ -120,4 +118,84 @@ This one pulls the whole week together. `get_income` and `get_expenses` use the 
 
 `get_balance` subtracts expenses from income. `get_status` handles positive, negative AND exactly zero. `analyze` joins those results into the hard-bonus dictionary, including the largest expense's name and the expense count. Printing stays outside the analysis. Empty transactions give zeros and Break-even; income with no expenses gives largest expense None. Everything works on fresh containers without editing the supplied rows, and the largest-expense helper returns a copy so editing that result doesn't change the source record.
 
-The thing I keep coming back to: the constraints make the hidden work visible. Once the pointer moves, tracker updates and local state make sense, the fancy built-ins stop looking like magic 😼.
+## week 5
+
+### 1. List_Analyxer — start with an actual number
+
+No min(), max() or sum(), so the loop handles all three jobs. `listed` holds the numbers, `minn` and `maxx` start at the first item, and `total` starts at zero. Each `x` gets added to the total and compared with both trackers. After the loop, total divided by `len(listed)` gives the average.
+
+Starting both extremes at zero sounds harmless until every number is negative. Then zero could end up being the largest without even being in the list 😹. Using the first value avoids that. The question guarantees a non-empty list, so `listed[0]` is a valid starting point. The supplied numbers give 5, 27, 66 and 13.2.
+
+### 2. LIneeer_srch — find it, then stop
+
+They banned `.index()`, so `indexxed` starts at -1 and the loop checks `values[i]` against `target`. A match saves `i` and immediately breaks. That break is part of the requirement: this week only wants the first occurrence, even if the same number appears later.
+
+Zero couldn't stand for “not found” cos it's a real list index. -1 works as the sentinel here, and the final check prints a message rather than using it to access the list. For target 7 the search stops at index 1; for 18 it reaches the end with `indexxed` still -1.
+
+### 3. matrixx — reset the right thing
+
+The outer loop picks a `row`; the inner loop adds each `num` into `total`. No sum() involved. `row_num` starts at 1 for the display and increases after each row.
+
+The important bit is resetting `total` INSIDE the outer loop. Leaving it outside would make the second row include the first row's numbers, and that's a running matrix total rather than a row total. With the reset in place, the sample prints 12, 9 and 60. More rows just mean more trips through the outer loop.
+
+### 4. balanced_px — the count needs to stay sensible
+
+Only round parentheses this week, so a counter is enough. Every `(` adds one to `par`, every `)` subtracts one, and everything else in `sentence` gets ignored. A final zero means all the openings got closed, provided the count never went negative.
+
+That last condition matters. `)(` adds up to zero overall, but it's still the wrong order. Breaking as soon as `par` goes negative catches the unmatched closing bracket before a later opening can hide it. An empty sentence has no unmatched parentheses and prints Balanced.
+
+### 5. mini_todo_lixt_lol — task numbers aren't indices
+
+`tasks` is a list of strings and `choice` picks the add/view/remove/quit branch. Add appends the task text; view loops through the list and displays `i + 1`. The while loop keeps the menu going until quit.
+
+Removal is where the two numbering systems meet: task 1 lives at index 0. I check that `number` is numeric AND within 1 through `len(tasks)` before popping `int(number) - 1`. The empty-list checks stop view/remove from pretending there's a task available. After removal the next view numbers the remaining tasks from 1 again.
+
+## week 6
+
+### 1. List_analyxer_againn_wtf — same list, more receipts 😭
+
+The `listed`, `minn`, `maxx`, `total` and `average` work is the same as Week 5. Now `minn_index` and `maxx_index` move with their values. The comparisons stay strictly `<` and `>`, so another 27 doesn't overwrite the index of the first 27. The sample's largest value stays at index 2.
+
+Counting above-average numbers has to wait. The final average isn't known halfway through the list, so counting against a changing average would answer a different question. The first pass gets the total and extremes; the second counts values above the completed average. Here that's 14, 27 and 27: three values, with the average displayed as 13.71. The comparison uses the unrounded average.
+
+### 2. lin_srch — the break had to go
+
+Week 5 stopped at the first match. This version needs ALL occurrences, so `indexxed` becomes a list and each matching `i` gets appended. `values`, `target` and the index-based loop stay familiar; the changed requirement doesn't need a whole new vocabulary.
+
+The list already gives all the output pieces: `len(indexxed)` is the count, item 0 is the first match, and item -1 is the last. Those accesses happen only after checking the list isn't empty. Target 7 gives `[1, 4, 6]`; target 22 gives one index serving as both first and last. No `.index()`, `.count()` or comprehension needed.
+
+### 3. matrix_sum — keep one total per column
+
+`matrixx`, `row`, `row_num` and `total` carry over from Week 5. The row sum still resets each time, and dividing it by the row length gives that row's average. The new part is `column_totals`: one zero-initialised slot for every column.
+
+Inside the nested loop, each value goes into the current row total AND its column's slot. Unlike the row total, the column slots survive between rows. That gives 13, 27 and 41 for the sample. Reading the column count from the first row lets the same loops handle different rectangular dimensions, without hardcoding three columns or importing anything.
+
+### 4. balance() — counting alone can't catch this one
+
+Week 5's `par` counter can't distinguish `([)]` from correctly nested brackets. The totals cancel, but the types close in the wrong order. So this version keeps `sentence` and `x`, then uses a list stack to remember the actual opening brackets.
+
+An opening gets appended. A closing bracket needs a non-empty stack, then its partner in `pairs` must match the popped opening. Last open, first closed 😼. Any mismatch stops the scan; leftover openings also fail the final check. Non-bracket characters never enter the stack, so expressions can contain ordinary text without changing the result.
+
+### 5. todo_lisit — the task needs a status now
+
+A plain task string can't remember whether it's done, so each entry becomes `[text, done]`. Adding starts it at False. Viewing prints `[ ]` or `[x]` from that flag, and the done command changes the flag without removing the text. The familiar `tasks`, `choice`, `number` and `i` still do their original jobs.
+
+Commands now arrive on one line, so splitting once keeps the whole task description together. `get_task_index` centralises the empty-list, non-numeric and range checks for both remove and done. It returns -1 for invalid input; the calling branches check that before touching a task. Otherwise, subtracting one converts the displayed task number into the actual index.
+
+### 6. lip_year — centuries have an exception
+
+Lunar calendar aside, the exercise uses Gregorian leap-year rules lol 🌙. Divisible by 4 isn't enough: 1900 passes that test but isn't a leap year. Divisibility by 400 gets checked first, then 100, then 4, with the remaining years returning False.
+
+That order lets 2000 through before the century rejection catches 1900. The stretch starts at `year + 1`, calls the same checker and keeps collecting until it has three leap years. Starting after the input matters; entering a leap year shouldn't include that year among the NEXT three.
+
+### 7. duplicatez — print each repeated value once
+
+No set(), `.count()` or sorting. The outer loop picks a `number`; the inner loop counts matching `other` values manually. A count above one means it repeats, and `number not in duplicates` stops it being appended again. This is a straightforward O(n²) approach for these practice lists.
+
+The order follows the first position of each repeated value, which matches the sheet's `[1, 2, 3, 2, 4, 5, 1] → [1, 2]` example. That's worth spelling out cos detecting duplicates only when their second occurrence arrives would produce `[2, 1]`. For the stretch, a frequency dictionary counts every value, then a second loop keeps only counts above one. Insertion order keeps those keys aligned with the duplicate list.
+
+### 8. decode_encode — a run isn't the whole frequency
+
+`aabbaa` needs `a2b2a2`, not one combined count for a. So encode remembers `current` and `count`, extending the count while adjacent characters match. A change saves the completed run and starts another. The last run gets saved after the loop too; otherwise it would never reach the result. Empty input returns an empty string, and A/a remain distinct.
+
+Decode remembers a `letter` and collects its count into `digits`. It doesn't expand the run until the next non-digit character arrives, so 12 stays twelve rather than being read as separate counts. The final run is expanded after the loop. The format works for non-digit source characters; literal digits would need an escaping rule to avoid being mistaken for counts. No groupby or imports involved.

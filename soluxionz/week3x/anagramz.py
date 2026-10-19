@@ -10,7 +10,7 @@ def character_countx(wordx):
 
 
 def anagram_checkx(firstx, secondx):
-    # Same letters isn't enough; the number of each letter has to match too.
+    # Same letters isn't enough the number of each letter has to match too.
     return character_countx(firstx) == character_countx(secondx)
 
 
