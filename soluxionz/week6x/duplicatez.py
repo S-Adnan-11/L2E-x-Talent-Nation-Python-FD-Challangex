@@ -8,7 +8,7 @@ for number in numbers:
         if other == number:
             times += 1
 
-    if times > 1 and number not in duplicates:  # one slot per duplicate pls 😹
+    if times > 1 and number not in duplicates:  #actuallu n1!😹
         duplicates.append(number)
 
 print(duplicates)
