@@ -14,7 +14,7 @@ def encode(text):
             current = text[i]
             count = 1
 
-    result += current + str(count)  # last run needs saving too 😼
+    result += current + str(count)  #😼
     return result
 
 

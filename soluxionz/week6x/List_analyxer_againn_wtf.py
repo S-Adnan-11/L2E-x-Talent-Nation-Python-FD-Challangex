@@ -21,7 +21,7 @@ for i in range(len(listed)):
 
 average = total / len(listed)
 
-# average first, then count 😼
+#then count
 above_average = 0
 for x in listed:
     if x > average:

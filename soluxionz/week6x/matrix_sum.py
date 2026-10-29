@@ -1,5 +1,13 @@
 matrixx = [[2, 4, 6], [1, 3, 5], [10, 20, 30]]
 
+#  [2, 4, 6, 7]
+#  [1, 3, 5]
+#  [10, 20, 30]
+#  [1, 3, 5]
+#  [10, 20, 30, 55]
+#  [10, 20, 30]
+#  
+
 number_of_columns = len(matrixx[0])
 column_totals = [0] * number_of_columns    
 

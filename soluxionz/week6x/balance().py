@@ -13,7 +13,7 @@ for x in sentence:
         if len(stack) == 0:
             balanced = False
             break
-        last_open = stack.pop()  # last open, first out 😼
+        last_open = stack.pop() 
         if last_open != pairs[x]:
             balanced = False
             break

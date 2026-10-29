@@ -1,4 +1,5 @@
 numbers = [1, 2, 3, 2, 4, 5, 1, 3, 2, 6, 8, 4, 4, 3, 8]
+# numbers = [1,2,3,4]
 
 duplicates = []
 
@@ -8,10 +9,12 @@ for number in numbers:
         if other == number:
             times += 1
 
-    if times > 1 and number not in duplicates:  # one slot per duplicate pls 😹
+    if times > 1 and number not in duplicates: 
         duplicates.append(number)
-
-print(duplicates)
+if duplicates == []:
+    print(duplicates, "(no duplicates)")
+else:
+    print(duplicates)
 
 counts = {}
 for number in numbers:
@@ -25,4 +28,4 @@ for number in counts:
     if counts[number] > 1:
         duplicate_counts[number] = counts[number]
 
-print(duplicate_counts)
+# print(duplicate_counts)
