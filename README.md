@@ -1,6 +1,6 @@
 # challangex → soluxionz 😼
 
-Python foundation challangex from Weeks 3–6, including the Week 1/2 revision and optional stretches. Loops, dictionaries, functional thinking, then more loops lol. The later weeks build on the earlier ones with extra tracking and a few new problems.
+Python foundation challangex from Weeks 3–7, including the Week 1/2 revision and optional stretches. Loops, dictionaries, functional thinking, then more loops lol. The later weeks build on the earlier ones with extra tracking, number algorithms and matrix work.
 
 No dependencies. Python 3.9 or newer.
 
@@ -14,9 +14,11 @@ python3 soluxionz/week4x/transactionz.py
 python3 soluxionz/week5x/List_Analyxer.py
 python3 soluxionz/week6x/List_analyxer_againn_wtf.py
 python3 'soluxionz/week6x/balance().py'
+python3 soluxionz/week7x/prime.py
+python3 soluxionz/week7x/matrixx_rtx.py
 ```
 
-Weeks 3 and 4 keep prompts/examples under `if __name__ == "__main__":`, so their functions can also be imported without starting a session. Weeks 5 and 6 mostly run directly: some prompt for input, others use a starting list or matrix near the top of the file.
+Weeks 3 and 4 keep prompts/examples under `if __name__ == "__main__":`, so their functions can also be imported without starting a session. Weeks 5–7 mostly run directly: some prompt for input, others use a starting list or matrix near the top of the file.
 
 Week 5's `balanced_px.py` defines a function without calling it. Example:
 
@@ -92,7 +94,29 @@ The same five problems with extra requirements, followed by leap years, duplicat
 
 The extended to-do menu accepts commands on one line: `add Study Python`, `view`, `done 1`, `remove 1`, `quit`. Tasks stay in memory for that session.
 
+## Week 7
+
+Square-root checks, Fibonacci without a stored list, manual base conversion and more matrix work. The anagram dictionary makes another appearance too lol.
+
+| Question | File | Approach |
+| --- | --- | --- |
+| 1. Prime Number Checker | [prime.py](soluxionz/week7x/prime.py) | `is_prime`: while-loop divisors up to the square root; manually total primes through N |
+| 2. Fibonacci — Even Sum | [even_fibonacci.py](soluxionz/week7x/even_fibonacci.py) | loop with two sequence values; even total and forward/reverse strings |
+| 3. Decimal to Binary | [10_to_01.py](soluxionz/week7x/10_to_01.py) | divide by 2 and prepend each remainder |
+| 4. Matrix Multiplication | [matrix_mx.py](soluxionz/week7x/matrix_mx.py) | dimension check and three nested loops |
+| 5. Remove Spaces & Capitalize | [capitalize.py](soluxionz/week7x/capitalize.py) | word-start flag and ASCII conversion; build both strings manually |
+| 6. Anagram Checker | [Anagramm!.py](soluxionz/week7x/Anagramm!.py) | `count_letters`: compare lowercase character-frequency dictionaries |
+| 7. Roman to Integer | [ass_roma.py](soluxionz/week7x/ass_roma.py) | symbol dictionary and while-loop look-ahead for subtraction |
+| 8. Matrix Rotation | [matrixx_rtx.py](soluxionz/week7x/matrixx_rtx.py) | transpose and manually reverse rows in place |
+
+The two matrix scripts use the matrices near the top of each file; the other six prompt for input. No imports or added dependencies.
+
 ## Small decisions that matter
+
+- Week 7's prime checker rejects numbers below 2. Divisor checks stop at `i * i <= num`, and the prime list/total includes N when N itself is prime.
+- Fibonacci starts with 0, 1 and builds the reversed output by prepending each generated value. It uses strings rather than a sequence list, slicing or `.reverse()`. The binary converter uses remainders rather than `bin()` and also handles zero as `"0"`.
+- Matrix multiplication assumes non-empty rectangular inputs and checks that A's column count equals B's row count. Rotation assumes a square matrix and modifies the existing rows directly.
+- Capitalization treats literal spaces as word boundaries and converts only ASCII a–z at a word's start. The no-spaces output is built from those same converted characters. Roman conversion rejects empty input/unknown symbols and applies the exercise's look-ahead rule; it doesn't validate every rule of canonical Roman notation.
 
 - List analysers assume at least one number. Starting the trackers at the first value handles negative-only lists too. Week 6 keeps the first index on ties and counts above-average numbers only after calculating the average.
 - Matrix scripts expect non-empty numeric rows; Week 6 expects a rectangular matrix. Its column accumulators work with different row/column counts.
@@ -117,5 +141,5 @@ The automated suite covers Weeks 3 and 4, including examples, edge cases and the
 python3 -m unittest discover -s tests -v
 ```
 
-Weeks 5 and 6 run as the scripts listed above. The question sheets live in [challangex](challangex). [StudyCase](StudyCase) walks through the constraints and the reasoning behind each soluxion.
+Weeks 5–7 run as the scripts listed above. The question sheets live in [challangex](challangex). [StudyCase](StudyCase) walks through the constraints and the reasoning behind each soluxion.
 

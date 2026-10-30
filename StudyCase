@@ -1,7 +1,7 @@
 # StudyCase
 # actually Case Study 😼
 
-The constraints, the decisions and the bits that needed more than the obvious shortcut. Weeks 3–6 cover manual tracking, functional thinking, then harder versions of the practical problems. Same ideas coming back with extra work to do lol.
+The constraints, the decisions and the bits that needed more than the obvious shortcut. Weeks 3–7 cover manual tracking, functional thinking, then harder practical problems, number algorithms and matrix manipulation. Same ideas coming back with extra work to do lol.
 
 ## week 3
 
@@ -199,3 +199,53 @@ The order follows the first position of each repeated value, which matches the s
 `aabbaa` needs `a2b2a2`, not one combined count for a. So encode remembers `current` and `count`, extending the count while adjacent characters match. A change saves the completed run and starts another. The last run gets saved after the loop too; otherwise it would never reach the result. Empty input returns an empty string, and A/a remain distinct.
 
 Decode remembers a `letter` and collects its count into `digits`. It doesn't expand the run until the next non-digit character arrives, so 12 stays twelve rather than being read as separate counts. The final run is expanded after the loop. The format works for non-digit source characters; literal digits would need an escaping rule to avoid being mistaken for counts. No groupby or imports involved.
+
+## week 7
+
+### 1. prime — no need to try every number
+
+Checking all the way up to the number would do extra work, and the question specifically wants a while loop stopping at the square root. The useful observation is that factors come in pairs. If a number has a factor above its square root, the other factor is below it. So `is_prime` only needs to test while `i * i <= num`, with no math import involved.
+
+Numbers below 2 return False straight away; finding one divisor also returns False. Getting past the divisor loop means prime. A second while loop walks from 2 through N, adding each prime to the display list and to `total` manually. No sum() lol. Input 10 gives `[2, 3, 5, 7]` and 17; input 7 includes 7 itself and gives the same total.
+
+### 2. even_fibonacci — backwards without a list 😼
+
+They said no recursion and no storing the sequence in a list just to reverse it. So `a` and `b` hold the next two Fibonacci values. Each iteration uses the current `a`, calculates `next_number = a + b`, then moves a and b forward. Keeping that temporary value avoids losing one of the numbers before the addition is done.
+
+`forward_text` appends each number, while `reversed_text` prepends it. That builds both display orders as the sequence is generated, with no slicing or reverse method. The empty-string checks handle separators without a leading/trailing comma. An even `a` gets added to `even_sum` manually. For eight terms, 0, 2 and 8 contribute 10, and the reversed display starts at 13.
+
+### 3. 10_to_01 — the remainders come out backwards
+
+No bin() and no binary-formatting shortcut, so this one uses repeated division by 2. `number % 2` gives the next binary digit and `number // 2` removes that digit's contribution. The catch is that the least significant digit comes out first.
+
+Appending those remainders would put the binary digits the wrong way round. Prepending each one to `binary` fixes that while the loop runs. For 10 the remainders arrive as 0, 1, 0, 1, which builds `1010`. Zero gets its own `"0"` branch because it wouldn't enter the loop at all. Positive integers are the task's input domain; the script also prints a warning for negatives.
+
+### 4. matrix_mx — one row meets one column
+
+Matrix multiplication isn't multiplying matching positions, even if both examples happen to be 2×2. Each result cell is a row of A dotted with a column of B. That's why the first check compares `cols_a` with `rows_b`: those are the dimensions that must agree.
+
+The i loop selects A's row, j selects B's column, and k walks the shared dimension, adding `A[i][k] * B[k][j]` into `total`. Reset total for every cell, append the cell to `new_row`, then append that row to `result`. The dimensions determine the output shape; no comprehensions or numpy needed. The sample gives `[19, 22]` and `[43, 50]`. An incompatible pair prints the dimension message instead.
+
+### 5. capitalize — the flag knows where the word starts
+
+No title(), capitalize() or replace(), so `start_of_word` remembers whether the current position begins a word. A space goes into `capitalized` and resets the flag. The next non-space character is converted only if it's between a and z: `chr(ord(character) - 32)` moves it to the uppercase ASCII range.
+
+Each non-space character then goes into BOTH results, and the flag becomes False. So `capitalized` keeps the original spacing while `no_spaces` skips spaces during construction, rather than removing them afterwards. Other letters inside the word keep their original case. `hello world from python` becomes `Hello World From Python` and `HelloWorldFromPython`, with no imports or banned methods.
+
+### 6. Anagramm! — frequency, again lol
+
+Same dictionary idea from the earlier anagram problem, with sorting and set() still off the table. Each input is lowercased before it reaches `count_letters`. The helper starts a fresh `counts` dictionary and increments the entry for every `letter`, creating it at one when it's new.
+
+Dictionary equality checks the characters AND their frequencies, so aab and abb don't accidentally pass just because they contain the same letter types. Dormitory and dirtyroom do pass after lowercasing. Spaces and punctuation remain characters if supplied; the exercise only asks to ignore case. The counting helper itself doesn't lowercase, so that preparation belongs to the input flow.
+
+### 7. ass_roma — look ahead before adding
+
+The dictionary gives each Roman symbol its value, but adding everything would turn IV into 6 😭. The while loop needs a look-ahead: if `current` is smaller than the next symbol, subtract it from `total`; otherwise add it. The `i + 1 < len(roman)` check stops the last symbol from looking beyond the string.
+
+With MCMXCIV, the C before M, X before C and I before V get subtracted, giving 1994. Uppercasing the input accepts lowercase symbols too. The earlier validation rejects unknown symbols and empty text before any dictionary lookup in the conversion loop. It applies the question's subtraction rule; it isn't a full validator for canonical Roman spellings.
+
+### 8. matrixx_rtx — swap it, don't rebuild it
+
+The rotation constraint says in place, so making a fresh matrix would miss the point. First transpose: swap `matrix[i][j]` with `matrix[j][i]`. The inner loop starts at `i + 1`, which visits each off-diagonal pair once. Swapping both halves would just undo the transpose.
+
+Then reverse each existing row with left/right indices and a temporary value. Together, transpose and row reversal produce a 90-degree clockwise turn. The 3×3 example ends up as `[7, 4, 1]`, `[8, 5, 2]`, `[9, 6, 3]`. No new matrix, slicing or reverse method involved; all the swaps happen inside the original square grid 😼.
