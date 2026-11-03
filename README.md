@@ -1,6 +1,6 @@
 # challangex → soluxionz 😼
 
-Python foundation challangex from Weeks 3–7, including the Week 1/2 revision and optional stretches. Loops, dictionaries, functional thinking, then more loops lol. The later weeks build on the earlier ones with extra tracking, number algorithms and matrix work.
+Python foundation challangex from Weeks 3–8, including the Week 1/2 revision and optional stretches. Loops, dictionaries, functional thinking, then more loops lol. The later weeks add matrix work, backtracking and a performance lab with actual call counts.
 
 No dependencies. Python 3.9 or newer.
 
@@ -16,9 +16,11 @@ python3 soluxionz/week6x/List_analyxer_againn_wtf.py
 python3 'soluxionz/week6x/balance().py'
 python3 soluxionz/week7x/prime.py
 python3 soluxionz/week7x/matrixx_rtx.py
+python3 soluxionz/week8x/binary_srch.py
+python3 soluxionz/week8x/performance_labx.py
 ```
 
-Weeks 3 and 4 keep prompts/examples under `if __name__ == "__main__":`, so their functions can also be imported without starting a session. Weeks 5–7 mostly run directly: some prompt for input, others use a starting list or matrix near the top of the file.
+Weeks 3, 4 and 8 keep prompts/examples under `if __name__ == "__main__":`, so their functions can also be imported without starting a session. Weeks 5–7 mostly run directly: some prompt for input, others use a starting list or matrix near the top of the file.
 
 Week 5's `balanced_px.py` defines a function without calling it. Example:
 
@@ -111,7 +113,40 @@ Square-root checks, Fibonacci without a stored list, manual base conversion and 
 
 The two matrix scripts use the matrices near the top of each file; the other six prompt for input. No imports or added dependencies.
 
+## Week 8
+
+Revision with more edge cases, then Hanoi, Pascal, Hangman, backtracking and the full performance lab. All ten questions and their bonuses are included.
+
+| Question | File | Main functions |
+| --- | --- | --- |
+| 1. Binary Search | [binary_srch.py](soluxionz/week8x/binary_srch.py) | `binary_search`, `binary_search_recursive` |
+| 2. RLE Round Trip | [rle_again.py](soluxionz/week8x/rle_again.py) | `rle_encode`, `rle_decode`, `compression_ratio` |
+| 3. Maximum Subarray | [max_subarrayx.py](soluxionz/week8x/max_subarrayx.py) | `max_subarray_brute`, `max_subarray_fast` |
+| 4. Integer to Roman | [ass_roma_back.py](soluxionz/week8x/ass_roma_back.py) | `integer_to_roman`, `roman_to_integer` |
+| 5. Tower of Hanoi | [hanoi_towerz.py](soluxionz/week8x/hanoi_towerz.py) | `hanoi` |
+| 6. Bubble Sort | [bubble_sortx.py](soluxionz/week8x/bubble_sortx.py) | `bubble_sort`, including `descending=True` |
+| 7. Pascal's Triangle | [pascalx.py](soluxionz/week8x/pascalx.py) | `pascal_rows`, single-list `pascal_row` |
+| 8. Hangman | [hangmanx.py](soluxionz/week8x/hangmanx.py) | `play_hangman`, interactive `main` |
+| 9. Subsets & Permutations | [subsets_permz.py](soluxionz/week8x/subsets_permz.py) | `subsets`, `permutations`, `subsets_with_sum` |
+| 10. Performance Lab | [performance_labx.py](soluxionz/week8x/performance_labx.py) | coin counters, `memoize`, `longest_consecutive`, `count_pairs`, Fibonacci factories |
+
+Each file prints its checks when run. That includes the recursive/loop search comparison, RLE round trips, brute/fast subarray comparison, all 1–3999 Roman round trips, Hanoi move counts and subset/permutation counts through n=8. The Roman inverse wraps Week 7's existing look-ahead logic locally; the earlier script stays as it is.
+
+`hangmanx.py` prints its examples, then asks for a word, an attempt limit and one letter at a time. The interactive part calls the same pure game function after each guess.
+
+The lab prints naive/cached Fibonacci calls, both coin results, cache hits/misses, a three-entry FIFO eviction demo, the LRU bonus and the complexity table. Its code comments include the five written-analysis answers required by the sheet. The coin recurrence is shared by both versions; only the counting/cache wrapper changes.
+
+For the 100-unit coin example, both versions return 292. The naive version makes 38,901 calls; the cached one makes 1,001 calls (310 hits, 691 misses). The bottom-up bonus handles amount 10000 without recursive calls. The report distinguishes the O(A×m) cached states from the O(m) cost of hashing the coin tuple on each lookup; with m coin types, that implementation has an O(A×m²) time bound.
+
 ## Small decisions that matter
+
+- Binary search assumes ascending input and returns `(leftmost_index, comparisons)`. Each target equality counts once; a non-match also counts its direction comparison. Pointer bounds aren't included.
+- Week 8 RLE accepts letters only, reads whole positive counts, and raises `ValueError` for malformed encodings. Empty input round-trips as `""`; its compression ratio is defined as `0.0`. Single-letter runs can make encoding longer.
+- Maximum subarray returns `(sum, start, end)` with inclusive indices; empty input returns `(0, -1, -1)`. Equal sums keep the earliest start, then earliest end. All-negative input still picks a real element.
+- Integer-to-Roman returns `""` for values outside 1–3999 or non-integer inputs. Hanoi accepts zero disks as no moves and rejects negative counts. Pascal accepts zero rows as `[]`; its single-row bonus counts rows from zero. Negative row counts/indices raise `ValueError`.
+- Bubble sort intentionally modifies the supplied list and returns `(comparisons, swaps)`. The other Week 8 analysis functions leave input lists unchanged. Hangman's empty word is already won; a non-empty word with zero attempts is already lost. Guesses use lowercase a–z; repeats cost nothing, and guesses after an ending are ignored.
+- Permutations assume distinct items. Subsets treat positions as choices, so repeated input values can produce equal-looking subsets. Returned result rows are fresh lists. Sum-filtered subsets allow negative values and include the empty subset when the target is zero.
+- Coin amounts below zero return zero ways; amount zero has one empty combination. Duplicate denominations count once. Zero/negative/non-integer coin values raise `ValueError`. Cache size `None` is unlimited, zero disables storage, and positive sizes bound the entry count. `lru=True` refreshes order on hits; the default is FIFO.
 
 - Week 7's prime checker rejects numbers below 2. Divisor checks stop at `i * i <= num`, and the prime list/total includes N when N itself is prime.
 - Fibonacci starts with 0, 1 and builds the reversed output by prepending each generated value. It uses strings rather than a sequence list, slicing or `.reverse()`. The binary converter uses remainders rather than `bin()` and also handles zero as `"0"`.
@@ -135,11 +170,11 @@ The two matrix scripts use the matrices near the top of each file; the other six
 
 ## Checks and notes
 
-The automated suite covers Weeks 3 and 4, including examples, edge cases and the required restrictions:
+The automated suite covers Weeks 3, 4 and 8, including examples, edge cases and the required restrictions. Week 8 also checks input preservation, independent reference results, legal Hanoi moves and cache behaviour:
 
 ```bash
 python3 -m unittest discover -s tests -v
 ```
 
-Weeks 5–7 run as the scripts listed above. The question sheets live in [challangex](challangex). [StudyCase](StudyCase) walks through the constraints and the reasoning behind each soluxion.
+Weeks 5–7 run as the scripts listed above. Week 8's printed checks run alongside its examples. The question sheets live in [challangex](challangex). [StudyCase](StudyCase) walks through the constraints and the reasoning behind each soluxion.
 

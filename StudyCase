@@ -1,7 +1,7 @@
 # StudyCase
 # actually Case Study 😼
 
-The constraints, the decisions and the bits that needed more than the obvious shortcut. Weeks 3–7 cover manual tracking, functional thinking, then harder practical problems, number algorithms and matrix manipulation. Same ideas coming back with extra work to do lol.
+The constraints, the decisions and the bits that needed more than the obvious shortcut. Weeks 3–8 cover manual tracking, functional thinking, harder practical problems, matrices, backtracking and measured performance. Same ideas coming back with extra work to do lol.
 
 ## week 3
 
@@ -249,3 +249,71 @@ With MCMXCIV, the C before M, X before C and I before V get subtracted, giving 1
 The rotation constraint says in place, so making a fresh matrix would miss the point. First transpose: swap `matrix[i][j]` with `matrix[j][i]`. The inner loop starts at `i + 1`, which visits each off-diagonal pair once. Swapping both halves would just undo the transpose.
 
 Then reverse each existing row with left/right indices and a temporary value. Together, transpose and row reversal produce a 90-degree clockwise turn. The 3×3 example ends up as `[7, 4, 1]`, `[8, 5, 2]`, `[9, 6, 3]`. No new matrix, slicing or reverse method involved; all the swaps happen inside the original square grid 😼.
+
+## week 8
+
+### 1. binary_srch — finding it isn't the end this time
+
+The list is already sorted, so scanning everything would waste the useful part. `low` and `high` keep the remaining search window, and `middle` splits it. A value below the target sends low right; a value above sends high left. No membership shortcut or `.index()` involved.
+
+Duplicates are the twist. Finding a match saves `middle` in `indexxed`, but the search keeps going to its LEFT. That leaves the earliest match saved when the window finally closes. `comparisons` counts each equality check and, only on a non-match, the extra less-than check. Empty input returns `(-1, 0)`. The recursive bonus uses the same decisions and counting rule, and the printed cases compare the whole returned tuple.
+
+### 2. rle_again — the count can have more than one digit pls 😹
+
+The letters-only rule gets rid of the literal-digit ambiguity from Week 6. `rle_encode` uses i to walk one run at a time, collecting its `current` character and `count` before adding them to the result. Another run of the same letter later is still a separate run: aabbaa needs a2b2a2.
+
+Decode reads one letter, then keeps moving through ALL its count digits. Stopping after the first digit would turn a12 into the wrong answer. Missing/zero counts and malformed runs raise a clear error instead. The examples print round-trip checks, including empty text, one letter and mixed case. The compression bonus also shows abcd getting longer: each one-character run now needs a count alongside it. Empty text's ratio is defined as 0.0 so there's no division by zero.
+
+### 3. max_subarrayx — don't drag a bad total along
+
+Brute force tries each start and extends through every possible end, adding one number at a time. That's all the slices without using slicing or sum(). The fast version asks whether its current total helps the next number. If the total is negative, starting fresh is better; otherwise extending keeps the useful part.
+
+Starting the best sum at zero would've made an all-negative list claim an empty slice was best. Instead both versions start from the first actual number. Strictly better updates also keep their tie choices aligned: earliest start, then earliest end. Empty input has the explicit `(0, -1, -1)` result. The printed bonus compares both versions, and the tests check thousands of small lists against independent slice sums. Same sum AND same indices, cos matching only the sum could hide a mistake.
+
+### 4. ass_roma_back — give the big symbols first pick
+
+Week 7 looked at Roman symbols and decided whether to add or subtract. This time the direction flips. An ordered list starts at 1000/M and works down to 1/I, with CM, CD, XC, XL, IX and IV included in their proper places. While a value fits, add its symbol and subtract its value from the remaining number. Otherwise move to the next pair.
+
+Without the subtractive pairs, 4 could come out as IIII. Including them makes the greedy choices produce the standard form. Values outside 1–3999 consistently return an empty string. Week 7's look-ahead conversion is wrapped as `roman_to_integer` here so the bonus can send every integer from 1 through 3999 there and back. All 3,999 round trips pass 😼.
+
+### 5. hanoi_towerz — move the smaller problem first
+
+The largest disk can't move until the smaller pile is out of its way. So hanoi first asks itself to move n−1 disks onto the helper peg, records the source-to-target move, then asks itself to move that smaller pile from helper to target. Zero disks returns an empty move list, which stops the recursion.
+
+No loops or prints inside the function. The loop outside prints counts for one through ten disks, then checks the bonus through twelve. Every extra disk doubles the smaller solution and adds one move: `2**n - 1`. The tests also play the moves on three actual peg lists, checking that a larger disk never lands on a smaller one. A correct count alone wouldn't prove the moves were legal.
+
+### 6. bubble_sortx — no swaps is useful information
+
+No sort()/sorted(), so neighbouring values get compared and swapped when they're out of order. After each pass the largest remaining value has settled at the end, meaning the next pass can check one fewer pair. The `swapped` flag catches the other shortcut: a full pass with no movement means the list is already sorted.
+
+For five ascending values that takes four comparisons and zero swaps. Five reversed values take ten comparisons and ten swaps. Both the comparison and swap counts come back from the function, while the list itself gets sorted in place as required. The descending bonus only flips the neighbour comparison. Empty and single-item lists need no comparisons at all.
+
+### 7. pascalx — the neighbours already have the answer
+
+No factorials, formulas or comprehensions. Each row starts with 1, its middle entries add neighbouring values in the previous row, and another 1 closes it. The first row is just `[1]`; asking for zero rows returns `[]`. The display adds its own leading spaces outside the function instead of calling `.center()`.
+
+The single-row bonus has a different constraint: keep one list. I append the new trailing 1, then update the middle entries RIGHT to LEFT. Going left to right would overwrite a neighbour before the next addition used its old value. That small direction choice lets row k grow in the same list without keeping the whole triangle.
+
+### 8. hangmanx — a repeated guess isn't another mistake
+
+`guessed` remembers every used letter, `wrong_guesses` keeps only wrong letters in their original order, and `display` starts with underscores. A new correct guess reveals every matching position, so guessing p in apple reveals both p's at once. A repeated right or wrong guess skips the update completely.
+
+The function returns immediately when every position is revealed or the wrong count reaches the limit. That stops later guesses from changing a finished game. Empty word means already won; zero attempts on a non-empty word means already lost. The interactive bonus keeps input/printing in `main` and calls `play_hangman` with the collected guesses after each turn, reusing the same rules instead of writing a second game engine.
+
+### 9. subsets_permz — choose it, undo it, try another
+
+For subsets, each position offers two choices: skip its item or take it. For permutations, each unused position can supply the next item. The recursive calls explore those choices, and pop() undoes a choice before the next branch starts. The original items list never gets changed.
+
+The important copy happens when saving `current`. Appending the same working list over and over would leave all result entries pointing at one object that keeps changing 😭. Saving a copy gives each answer its own row. The n=0 case returns `[[]]` for both functions, and the counts through n=8 follow 2ⁿ and n!. The sum bonus carries a running total through the subset choices; it doesn't prune on being above target, cos negative numbers could bring it back down.
+
+### 10. performance_labx — count the work, then cut the repeats
+
+The coin problem needs combinations, not different orders of the same coins. One branch takes the current denomination and keeps its index so it can be reused. The other branch skips to the next denomination. Zero remaining amount is one completed combination; a negative remainder or no coins left is zero. Duplicate coin values are removed before counting, while zero/negative denominations are rejected so a recursive branch can't get stuck or keep increasing its amount.
+
+The naive and cached versions use that same `ways` body. `track_calls` observes the uncached calls, while `memoize()` wraps the cached version with a dictionary and its hits/misses/calls. Those counters and the cache belong to each wrapper, with no global stash. The coins become a tuple before they reach a cache key, cos lists aren't hashable. For amount 100 with `[1, 5, 10, 25, 50]`, both answers are 292, but the naive version makes 38,901 calls against 1,001 cached calls. Of the cached calls, 310 are hits and 691 are misses.
+
+The size limit adds eviction. FIFO removes the first inserted key when a new result would overflow the cache; a hit doesn't move it. The hard-bonus LRU version DOES move hit keys to the newest position. The three-entry examples show an evicted argument becoming a miss again, and the cache never growing beyond three entries. Size zero deliberately stores nothing. A tiny cache saves memory but can make repeated subproblems expensive again.
+
+The dictionary questions need a different trick. `longest_consecutive` builds unique lookup keys and starts walking only when a predecessor is missing. Iterating those dictionary keys avoids recounting the same run for duplicate starting values. `count_pairs` adds the number of earlier complements before saving the current value; that counts different positions correctly even for `[1, 1, 1]`.
+
+The Fibonacci report makes the growth visible too: fib(25) takes 242,785 naive calls against 49 cached calls from a fresh cache. The memoized result for fib(90) is 2880067194370816120. The complexity table counts the coin cache's O(A×m) states AND the O(m) tuple-hashing work per lookup, rather than hiding that cost when the denomination list grows. The bottom-up coin bonus uses one amount-sized totals list and avoids recursive depth, so that's the choice for amount 10000. The written answers at the bottom explain dictionary collisions, cache memory, side effects and why memoizing an already-linear scan isn't much of a win.
